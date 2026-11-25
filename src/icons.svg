@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+  <defs>
+    <path id="select" d="M 5 3 L 20 13 L 13 14 L 10 21 Z"/>
+    <path id="rectangle" d="M 3 5 L 21 5 L 21 19 L 3 19 Z"/>
+    <path id="ellipse" d="M 21 12 C 21 16 17 19 12 19 C 7 19 3 16 3 12 C 3 8 7 5 12 5 C 17 5 21 8 21 12 Z"/>
+    <path id="line" d="M 4 20 L 20 4"/>
+    <path id="polygon" d="M 9 3 L 21 8 L 18 20 L 6 20 L 3 10 Z"/>
+    <path id="open" d="M 3 10 L 3 5 L 9 5 L 12 8 L 20 8 L 20 10 M 3 11 L 22 11 L 19 19 L 3 19 Z"/>
+    <path id="save" d="M 4 4 L 16 4 L 20 8 L 20 20 L 4 20 Z M 8 4 L 8 10 L 15 10 L 15 4 M 8 20 L 8 14 L 16 14 L 16 20"/>
+    <path id="export" d="M 13 4 L 20 4 L 20 11 M 20 4 L 10 14 M 9 6 L 4 6 L 4 20 L 18 20 L 18 15"/>
+    <path id="undo" d="M 8 5 L 3 10 L 8 15 M 4 10 L 14 10 C 19 10 20 13 20 18"/>
+    <path id="delete" d="M 4 6 L 20 6 M 9 6 L 9 3 L 15 3 L 15 6 M 6 6 L 7 21 L 17 21 L 18 6 M 10 10 L 10 17 M 14 10 L 14 17"/>
+  </defs>
+</svg>

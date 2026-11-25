@@ -3,6 +3,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Deque;
 import java.util.List;
+import java.util.function.Consumer;
 
 final class Drawing {
     static final int WIDTH = 1000, HEIGHT = 700;
@@ -22,25 +23,13 @@ final class Drawing {
         markSaved();
     }
 
-    void add(Figure figure) {
-        List<Figure> next = new ArrayList<>(figures);
-        next.add(figure);
-        recordChange(next);
-    }
+    void add(Figure figure) { edit(next -> next.add(figure)); }
+    void remove(int index) { edit(next -> next.remove(index)); }
+    void replace(int index, Figure figure) { edit(next -> next.set(index, figure)); }
 
-    void remove(int index) {
+    private void edit(Consumer<List<Figure>> change) {
         List<Figure> next = new ArrayList<>(figures);
-        next.remove(index);
-        recordChange(next);
-    }
-
-    void replace(int index, Figure figure) {
-        List<Figure> next = new ArrayList<>(figures);
-        next.set(index, figure);
-        recordChange(next);
-    }
-
-    private void recordChange(List<Figure> next) {
+        change.accept(next);
         if (history.size() == UNDO_LIMIT) history.removeLast();
         history.push(figures);
         figures = Collections.unmodifiableList(next);

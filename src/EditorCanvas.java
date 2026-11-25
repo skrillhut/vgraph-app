@@ -75,9 +75,13 @@ final class EditorCanvas extends JPanel {
     }
 
     void choose(Figure.Kind kind) {
+        select(kind, -1);
+    }
+
+    private void select(Figure.Kind kind, int index) {
         clearGesture();
         tool = kind;
-        selected = -1;
+        selected = index;
         setCursor(Cursor.getPredefinedCursor(kind == null ? Cursor.DEFAULT_CURSOR : Cursor.CROSSHAIR_CURSOR));
         update();
     }
@@ -100,7 +104,6 @@ final class EditorCanvas extends JPanel {
         update();
     }
 
-    double zoom() { return zoom; }
     void setZoom(double factor) {
         zoom = factor;
         revalidate();
@@ -189,8 +192,7 @@ final class EditorCanvas extends JPanel {
             return;
         }
         if (result != null && result != selection()) drawing.replace(selected, result);
-        clearGesture();
-        update();
+        cancel();
     }
 
     void finishPolygon() {
@@ -202,11 +204,7 @@ final class EditorCanvas extends JPanel {
 
     private void add(Figure figure) {
         drawing.add(figure);
-        clearGesture();
-        tool = null;
-        setCursor(Cursor.getDefaultCursor());
-        selected = drawing.figures().size() - 1;
-        update();
+        select(null, drawing.figures().size() - 1);
     }
 
     private void clearGesture() {
