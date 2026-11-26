@@ -47,11 +47,7 @@ final class ProjectFile {
         }
 
         Figure figure = Figure.create(kind, points, fill, stroke);
-        if (kind == Figure.Kind.LINE) {
-            if (figure.point(0).equals(figure.point(1))) throw new IllegalArgumentException();
-        } else if (figure.bounds().isEmpty()) {
-            throw new IllegalArgumentException();
-        }
+        if (!figure.isValidGeometry()) throw new IllegalArgumentException();
         return figure;
     }
 

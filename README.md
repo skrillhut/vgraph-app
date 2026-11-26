@@ -4,14 +4,24 @@
 
 ## Запуск
 
-Из корневой папки проекта выполните команды. Для сборки нужен JDK с компилятором `javac`.
+Для сборки нужен JDK с компилятором `javac`. Выполните команды из корня проекта. На macOS и Linux, в том числе в терминале VS Code:
 
 ```sh
+mkdir -p bin
 javac -encoding UTF-8 -d bin src/*.java
+cp src/icons.svg bin/
 java -cp bin App
 ```
 
-Для запуска из VS Code откройте проект и нажмите **Run** у метода `main` в `src/App.java`.
+На Windows в PowerShell:
+
+```powershell
+New-Item -ItemType Directory -Force bin | Out-Null
+$sources = Get-ChildItem src -Filter *.java | ForEach-Object FullName
+javac -encoding UTF-8 -d bin $sources
+Copy-Item src/icons.svg bin/
+java -cp bin App
+```
 
 ## Управление
 

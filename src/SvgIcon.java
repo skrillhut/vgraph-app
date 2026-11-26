@@ -6,7 +6,6 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.geom.Path2D;
 import java.io.InputStream;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
@@ -26,16 +25,13 @@ final class SvgIcon implements Icon {
 
     private static Map<String, Path2D> loadPaths() {
         Map<String, Path2D> result = new HashMap<>();
-        try {
-            URL sprite = SvgIcon.class.getResource("/icons.svg");
-            if (sprite == null) sprite = new URL(SvgIcon.class.getResource("/SvgIcon.class"), "../src/icons.svg");
-            try (InputStream stream = sprite.openStream()) {
-                NodeList nodes = DocumentBuilderFactory.newInstance().newDocumentBuilder()
-                        .parse(stream).getElementsByTagName("path");
-                for (int i = 0; i < nodes.getLength(); i++) {
-                    Element element = (Element)nodes.item(i);
-                    result.put(element.getAttribute("id"), parse(element.getAttribute("d")));
-                }
+        try (InputStream stream = SvgIcon.class.getResourceAsStream("/icons.svg")) {
+            if (stream == null) throw new IllegalStateException("icons.svg отсутствует в classpath");
+            NodeList nodes = DocumentBuilderFactory.newInstance().newDocumentBuilder()
+                    .parse(stream).getElementsByTagName("path");
+            for (int i = 0; i < nodes.getLength(); i++) {
+                Element element = (Element)nodes.item(i);
+                result.put(element.getAttribute("id"), parse(element.getAttribute("d")));
             }
         } catch (Exception ex) {
             throw new IllegalStateException("Не удалось загрузить icons.svg", ex);

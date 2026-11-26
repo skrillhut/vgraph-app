@@ -4,6 +4,7 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Shape;
+import java.awt.geom.Area;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Path2D;
@@ -50,6 +51,8 @@ abstract class Figure {
     final int pointCount() { return points.size(); }
     abstract Shape geometry();
     abstract String svgElement();
+
+    boolean isValidGeometry() { return !bounds().isEmpty(); }
 
     Rectangle bounds() {
         Rectangle box = new Rectangle(points.get(0));
@@ -102,7 +105,8 @@ abstract class Figure {
             scaled.add(new Point(anchor.x + (int)Math.round((p.x - anchor.x) * sx),
                     anchor.y + (int)Math.round((p.y - anchor.y) * sy)));
         }
-        return create(kind, scaled, fill, stroke);
+        Figure resized = create(kind, scaled, fill, stroke);
+        return resized.isValidGeometry() ? resized : this;
     }
 
     static String hex(Color color) {
@@ -146,6 +150,7 @@ final class LineFigure extends Figure {
         super(Kind.LINE, points, fill, stroke);
     }
     Shape geometry() { return new Line2D.Double(point(0), point(1)); }
+    boolean isValidGeometry() { return !point(0).equals(point(1)); }
     Point[] handles() { return new Point[] {point(0), point(1)}; }
     Figure resize(int handle, Point target) {
         if (target.equals(point(1 - handle))) return this;
@@ -155,7 +160,8 @@ final class LineFigure extends Figure {
     }
     String svgElement() {
         Point a = point(0), b = point(1);
-        return "line x1=\"" + a.x + "\" y1=\"" + a.y + "\" x2=\"" + b.x + "\" y2=\"" + b.y + "\"";
+        return "line x1=\"" + a.x + "\" y1=\"" + a.y + "\" x2=\"" + b.x + "\" y2=\"" + b.y
+                + "\" stroke-linecap=\"square\"";
     }
 }
 
@@ -163,6 +169,7 @@ final class PolygonFigure extends Figure {
     PolygonFigure(List<Point> points, Color fill, Color stroke) {
         super(Kind.POLYGON, points, fill, stroke);
     }
+    boolean isValidGeometry() { return !new Area(geometry()).isEmpty(); }
     Shape geometry() {
         Path2D path = new Path2D.Double();
         path.moveTo(point(0).x, point(0).y);

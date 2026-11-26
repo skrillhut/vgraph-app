@@ -37,7 +37,7 @@ final class EditorCanvas extends JPanel {
             public void mousePressed(MouseEvent e) {
                 if (!SwingUtilities.isLeftMouseButton(e)) return;
                 requestFocusInWindow();
-                press(position(e), e.getClickCount());
+                press(e);
             }
             public void mouseDragged(MouseEvent e) {
                 if (start != null) drag(position(e));
@@ -119,9 +119,10 @@ final class EditorCanvas extends JPanel {
                 clamp((int)Math.round(e.getY() / zoom), 0, Drawing.HEIGHT));
     }
 
-    private void press(Point p, int clicks) {
+    private void press(MouseEvent event) {
+        Point p = position(event);
         if (tool == Figure.Kind.POLYGON) {
-            placeVertex(p, clicks);
+            placeVertex(p, event.getClickCount());
             return;
         }
         start = p;
@@ -130,12 +131,16 @@ final class EditorCanvas extends JPanel {
         handle = -1;
         if (current != null) {
             Point[] handles = current.handles();
+            double nearest = Double.POSITIVE_INFINITY;
             for (int i = 0; i < handles.length; i++) {
-                if (handles[i].distance(p) * zoom <= 7) {
+                double distance = Point.distance(event.getX(), event.getY(),
+                        handles[i].x * zoom, handles[i].y * zoom);
+                if (distance <= 7 && distance < nearest) {
+                    nearest = distance;
                     handle = i;
-                    return;
                 }
             }
+            if (handle >= 0) return;
         }
         selected = -1;
         for (int i = drawing.figures().size() - 1; i >= 0; i--) {
@@ -198,7 +203,7 @@ final class EditorCanvas extends JPanel {
     void finishPolygon() {
         if (vertices.size() < 3) return;
         Figure polygon = Figure.create(Figure.Kind.POLYGON, vertices, fill, stroke);
-        if (polygon.bounds().isEmpty()) return;
+        if (!polygon.isValidGeometry()) return;
         add(polygon);
     }
 
